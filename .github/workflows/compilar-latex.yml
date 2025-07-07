@@ -1,0 +1,32 @@
+# Nome do fluxo de trabalho que aparecerá na aba "Actions" do GitHub
+name: Compilar Relatório LaTeX
+
+# Gatilho: este workflow roda a cada push na branch 'main'
+on:
+  push:
+    branches: [ "main" ]
+
+# Tarefas a serem executadas
+jobs:
+  build_latex:
+    runs-on: ubuntu-latest # Usar um ambiente Linux
+    steps:
+      # 1. Pega o código do seu repositório
+      - name: Set up Git repository
+        uses: actions/checkout@v4
+
+      # 2. Compila o arquivo .tex usando uma Action pronta da comunidade
+      # Substitua 'main.tex' pelo nome do seu arquivo principal
+      - name: Compile LaTeX document
+        uses: xu-cheng/latex-action@v3
+        with:
+          root_file: main.tex # <-- MUDE AQUI se o seu arquivo principal tiver outro nome
+
+      # 3. Salva o PDF gerado como um "artefato"
+      # O nome do artefato será 'relatorio-pdf'
+      - name: Upload PDF artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: relatorio-pdf
+          # O path deve ser o nome do PDF gerado (geralmente o mesmo do root_file)
+          path: main.pdf # <-- MUDE AQUI também se necessário
