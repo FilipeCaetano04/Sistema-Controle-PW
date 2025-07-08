@@ -1,13 +1,8 @@
 name: Compilar Relatório LaTeX
 
-# Gatilho: Roda em pushes para a branch 'main' APENAS se um arquivo .tex for modificado.
 on:
   push:
-    branches:
-      - "main"
-    paths:
-      - '**.tex'
-
+    branches: [ "main" ]
 
 jobs:
   build_latex:
