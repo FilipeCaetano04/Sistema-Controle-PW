@@ -7,6 +7,7 @@
 \usepackage{amsmath, amssymb}
 \usepackage{graphicx}
 \usepackage{setspace}
+\usepackage{float}
 
 \usepackage{color}
 \usepackage{listings}
@@ -83,6 +84,116 @@
 
 \subsubsection*{\sc Solução}
 
+Variáveis de estado: 
+\[
+    \textbf{x(t)} = 
+    [x_{1}(t), x_{2}(t), x_{3}(t)]
+    =
+    [x_{1}(t), x_{2}(t), \theta(t)]
+\]
+
+Vetor de entradas:
+\[
+    \textbf{u(t)} = 
+    [u_{1}(t), u_{2}(t)]
+    =
+    [v(t), \delta(t)]
+\]
+
+Vetor de saídas:
+\[
+    \textbf{y(t)} = [x_{1}(t), x_{2}(t)]
+\]
+
+Espaço de estados do sistema não linear:
+\[
+    \dot{\textbf{x}} = f(\textbf{x(t)}, \textbf{u(t)})
+    =
+    \begin{bmatrix}
+        f_1(x_1, x_2, x_3, u_1,u_2) \\
+        f_2(x_1, x_2, x_3, u_1,u_2) \\
+        f_3(x_1, x_2, x_3, u_1,u_2)
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+        \dot{x_1} \\
+        \dot{x_2} \\
+        \dot{x_3}
+    \end{bmatrix}
+\]
+\[
+    \textbf{y} = g(\textbf{x(t)})
+\]
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{imagens/veiculo_simplificado.png}
+    \caption{Veículo simplificado.}
+    \label{fig:meu_diagrama}
+\end{figure}
+
+Para $x_1$ e $x_2$ que são as posições no eixo horizontal e vertical, respectivamente, suas derivadas são as componentes da velocidade do centro de massa do veículo. Para $\theta$ que é a orientação do veículo, temos que sua derivada é a velocidade angular de rotação $\omega$.
+
+\[
+    \dot{\textbf{x}} =
+    \begin{bmatrix}
+        \dot{x_1} \\
+        \dot{x_2} \\
+        \dot{\theta}
+    \end{bmatrix} 
+    =
+    \begin{bmatrix}
+        v_{x1} \\
+        v_{x2} \\
+        \omega
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+        v \cdot \cos{(\alpha + \theta)} \\
+        v \cdot \sin{(\alpha + \theta)} \\
+        \dfrac{v}{R}
+    \end{bmatrix}
+\]
+
+\begin{itemize}
+    \item $v$: magnitude da velocidade do veículo 
+    \item $v_{x1}$: componente horizontal da velocidade
+    \item $v_{x2}$: componente vertical da velocidade
+    \item $\omega$: velocidade angular de rotação
+    \item $R$: raio da rotação
+    \item $\alpha$: ângulo de deslizamento
+    \item $\alpha + \theta$: ângulo de direção da velocidade 
+\end{itemize}
+
+Faremos algumas manipulações trigonométricas nas expressões atuais de $\dot{\textbf{x}}$ com o objetivo de deixá-las em função dos parâmetros das variáveis de estado e de entrada do sistema. Observano a Figura~\ref{fig:meu_diagrama}, temos que:
+\[
+    \tan(\delta) = \frac{b}{L'}
+\]
+\[
+    L' = \frac{b}{\tan(\delta)}
+\]
+Onde $b$ é o comprimenro do veículo. Além disso, observamos:
+
+\[
+    \tan(\alpha) = \frac{a}{L'}
+\] 
+\[
+    \tan(\alpha) = \frac{a}{\frac{b}{\tan(\delta)}} =\frac{a \cdot \tan(\delta)}{b}
+\]
+\[
+    \alpha = \arctan(\frac{a \cdot \tan(\delta)}{b})
+\]
+Onde $a$ é o comprimento do centro de massa até a roda inferior. Agora vamos analisar o raio da rotação:
+
+\[
+    \sin{(\alpha)} = \frac{a}{R}
+\]
+\[
+    R = \frac{a}{\sin{(\alpha)}}
+\]
+
+Agora, conhecemos todas as expressões do espaço de estados encontrado mais acima com os parâmetros que desejamos.
+
 \begin{lstlisting}[caption = {Código da Questão 1.1}, label={code:t1q1}]
 Codigo aqui!
 \end{lstlisting}
@@ -152,7 +263,7 @@ Codigo aqui!
 \newpage
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section*{\sc Tarefa 3: Controle de um Sistema Dinâmico}
+\section*{\sc Tarefa 3: Controle do Sistema Dinâmico}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection*{\sc Questão 3.1}
