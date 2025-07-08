@@ -1,32 +1,44 @@
-# Nome do fluxo de trabalho que aparecerá na aba "Actions" do GitHub
 name: Compilar Relatório LaTeX
 
-# Gatilho: este workflow roda a cada push na branch 'main'
 on:
   push:
     branches: [ "main" ]
 
-# Tarefas a serem executadas
 jobs:
   build_latex:
-    runs-on: ubuntu-latest # Usar um ambiente Linux
+    runs-on: ubuntu-latest
+    
+    # Adicione esta seção de permissões para permitir que a Action faça commit
+    permissions:
+      contents: write
+
     steps:
-      # 1. Pega o código do seu repositório
       - name: Set up Git repository
         uses: actions/checkout@v4
 
-      # 2. Compila o arquivo .tex usando uma Action pronta da comunidade
-      # Substitua 'main.tex' pelo nome do seu arquivo principal
+      - name: Cache TeX Live packages
+        uses: actions/cache@v4
+        with:
+          path: /usr/local/texlive/
+          key: ${{ runner.os }}-texlive-${{ hashFiles('**/*.tex') }}
+          restore-keys: |
+            ${{ runner.os }}-texlive-
+
       - name: Compile LaTeX document
         uses: xu-cheng/latex-action@v3
         with:
-          root_file: main.tex # <-- MUDE AQUI se o seu arquivo principal tiver outro nome
+          root_file: main.tex # Mude se o seu arquivo principal tiver outro nome
 
-      # 3. Salva o PDF gerado como um "artefato"
-      # O nome do artefato será 'relatorio-pdf'
-      - name: Upload PDF artifact
-        uses: actions/upload-artifact@v4
+      # NOVO PASSO: FAZ O COMMIT DO PDF GERADO
+      - name: Commit do arquivo PDF
+        uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          name: relatorio-pdf
-          # O path deve ser o nome do PDF gerado (geralmente o mesmo do root_file)
-          path: main.pdf # <-- MUDE AQUI também se necessário
+          # Mensagem do commit que aparecerá no histórico
+          commit_message: 'chore: Atualiza o PDF compilado [bot]'
+          
+          # Padrão do arquivo a ser commitado. Mude 'main.pdf' se o seu PDF tiver outro nome.
+          file_pattern: main.pdf
+          
+          # Nome e email do "usuário" que fará o commit (o robô)
+          commit_user_name: GitHub Actions Bot
+          commit_user_email: actions@github.com
