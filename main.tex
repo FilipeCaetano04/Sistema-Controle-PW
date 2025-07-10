@@ -84,6 +84,13 @@
 
 \subsubsection*{\sc Solução}
 
+Nesta resolução, traremos sobre o espaço de estados do sistema em questão e o processo para obtê-lo.
+\\\\
+Sistemas dinâmicos como o da questão podem ser descritos por relações entrada-saida ou por variáveis internas denominadas variáveis de estado. O problema apresentado trata do modelo da bicicleta cinemática muito útil para modelagem e simulação do movimento de veículos. O espaço de estados irá nos fornecer um modelo matemático de como o veículo se move.
+\\\\
+A seguir, são especificados os elementos para obtenção do modelo.
+\\\\
+
 Variáveis de estado: 
 \[
     \textbf{x(t)} = 
@@ -131,6 +138,13 @@ Espaço de estados do sistema não linear:
 
 \begin{figure}[H]
     \centering
+    \includegraphics[width=0.5\textwidth]{imagens/veiculo_4rodas.png}
+    \caption{Veículo com quatro rodas.}
+    \label{fig:meu_diagrama}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
     \includegraphics[width=0.5\textwidth]{imagens/veiculo_simplificado.png}
     \caption{Veículo simplificado.}
     \label{fig:meu_diagrama}
@@ -169,7 +183,7 @@ Para $x_1$ e $x_2$ que são as posições no eixo horizontal e vertical, respect
     \item $\alpha + \theta$: ângulo de direção da velocidade 
 \end{itemize}
 
-Faremos algumas manipulações trigonométricas nas expressões atuais de $\dot{\textbf{x}}$ com o objetivo de deixá-las em função dos parâmetros das variáveis de estado e de entrada do sistema. Observano a Figura~\ref{fig:meu_diagrama}, temos que:
+Faremos algumas manipulações trigonométricas nas expressões atuais de $\dot{\textbf{x}}$ com o objetivo de deixá-las em função dos parâmetros das variáveis de estado e de entrada do sistema. Observando a Figura~\ref{fig:meu_diagrama}, temos que:
 \[
     \tan(\delta) = \frac{b}{L'}
 \]
@@ -205,7 +219,7 @@ Agora, conhecemos todas as expressões do espaço de estados encontrado mais aci
     \dot{x_1} = v \cdot \cos{(\alpha + \theta)}
 \]
 \[
-    \dot{x_1} = v \cdot \sin{(\alpha + \theta)}
+    \dot{x_2} = v \cdot \sin{(\alpha + \theta)}
 \]
 \[
     \dot{\theta} = \dfrac{v}{R}
@@ -219,7 +233,7 @@ Substituindo $\alpha$ e R:
     \dot{x_2} = v \cdot \sin{(\arctan(\frac{a \cdot \tan(\delta)}{b}) + \theta)}
 \]
 \[
-    \dot{\theta} = \frac{v \cdot \sin{(\arctan(\frac{a \cdot \tan(\delta)}{b})}}{a}
+    \dot{\theta} = \frac{v \cdot \sin{(\arctan(\frac{a \cdot \tan(\delta)}{b}))}}{a}
 \]
 
 Reescrevendo as equações utilizando o vetor de estado e o vetor de entrada:
@@ -231,7 +245,7 @@ Reescrevendo as equações utilizando o vetor de estado e o vetor de entrada:
     \dot{x_2} = u_1 \cdot \sin{(\arctan(\frac{a \cdot \tan(u_2)}{b}) + x_3)}
 \]
 \[
-    \dot{x_3} = \frac{u_1 \cdot \sin{(\arctan(\frac{a \cdot \tan(u_2)}{b})}}{a}
+    \dot{x_3} = \frac{u_1 \cdot \sin{(\arctan(\frac{a \cdot \tan(u_2)}{b}))}}{a}
 \]
 
 \begin{lstlisting}[caption = {Código da Questão 1.1}, label={code:t1q1}]
