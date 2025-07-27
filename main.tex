@@ -67,14 +67,22 @@
 {\Large \noindent \sc Project Work - Sistema Mecânico} \\ % Alterado para um título genérico
 
 \begin{spacing}{1.5}
-{\large\sc \noindent Nome completo:}\\
+{\large\sc \noindent Nome completo: Paulo Arthur Farias Queiroz}
 % {\large\sc \noindent Nome completo:}\\
 
-{\large\sc \noindent Numero de matricula: }
+{\large\sc \noindent Numero de matricula: 552919}
 % {\large\sc \noindent Nome completo:}\\
 \end{spacing}
 
-\newpage
+\begin{spacing}{1.5}
+{\large\sc \noindent Nome completo: Filipe Abner Alves Caetano}
+% {\large\sc \noindent Nome completo:}\\
+
+{\large\sc \noindent Numero de matricula: 553960}
+% {\large\sc \noindent Nome completo:}\\
+\end{spacing}
+
+\url{https://github.com/FilipeCaetano04/Sistema-Controle-PW.git}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section*{\sc Tarefa 1: Modelagem}
@@ -83,14 +91,14 @@
 \subsection*{\sc Questão 1.1}
 
 \subsubsection*{\sc Solução}
-
-Nesta resolução, traremos sobre o espaço de estados do sistema em questão e o processo para obtê-lo.
+O sistema mecânico descrito nos enunciados é uma representação simplificada de um veículo, frequentemente referido como modelo cinemático de bicicleta devido às suas simplificações geométricas. Um modelo cinemático se concentra nas relações geométricas do movimento, ou seja, como a posição, velocidade e orientação mudam ao longo do tempo, sem considerar as forças ou torques que causam esse movimento.
 \\\\
-Sistemas dinâmicos como o da questão podem ser descritos por relações entrada-saida ou por variáveis internas denominadas variáveis de estado. O problema apresentado trata do modelo da bicicleta cinemática muito útil para modelagem e simulação do movimento de veículos. O espaço de estados irá nos fornecer um modelo matemático de como o veículo se move.
+Nesta resolução, objetivo é obter um modelo de espaço de estados para o sistema mecânico de direção do veículo. Um modelo de espaço de estados é uma representação matemática de um sistema físico como um conjunto de equações diferenciais de primeira ordem
+\\\\
+Sistemas dinâmicos como o da questão podem ser descritos por relações entrada-saida ou por variáveis internas denominadas variáveis de estado. O espaço de estados irá nos fornecer um modelo matemático de como o veículo se move.
 \\\\
 A seguir, são especificados os elementos para obtenção do modelo.
 \\\\
-
 Variáveis de estado: 
 \[
     \textbf{x(t)} = 
@@ -98,6 +106,11 @@ Variáveis de estado:
     =
     [x_{1}(t), x_{2}(t), \theta(t)]
 \]
+\begin{itemize}
+    \item $x_1(t)$: posição longitudinal (m)
+    \item $x_2(t)$: posição lateral (m)
+    \item $\theta(t) = x_3(t)$: orientação (rad)
+\end{itemize}
 
 Vetor de entradas:
 \[
@@ -106,20 +119,24 @@ Vetor de entradas:
     =
     [v(t), \delta(t)]
 \]
+\begin{itemize}
+    \item $u_1(t) = v(t)$: velocidade do centro de massa (m/s)
+    \item $u_2(t) = \delta(y)$: ângulo de direção (rad)
+\end{itemize}
 
 Vetor de saídas:
 \[
     \textbf{y(t)} = [x_{1}(t), x_{2}(t)]
 \]
 
-Espaço de estados do sistema não linear:
+O modelo de espaço de estados não linear é geralmente representado pela forma :
 \[
     \dot{\textbf{x}} = f(\textbf{x(t)}, \textbf{u(t)})
     =
     \begin{bmatrix}
-        f_1(x_1, x_2, x_3, u_1,u_2) \\
-        f_2(x_1, x_2, x_3, u_1,u_2) \\
-        f_3(x_1, x_2, x_3, u_1,u_2)
+        f_1(\textbf{x(t)}, \textbf{u(t)}) \\
+        f_2(\textbf{x(t)}, \textbf{u(t)}) \\
+       f_3(\textbf{x(t)}, \textbf{u(t)})
     \end{bmatrix}
     =
     \begin{bmatrix}
@@ -131,6 +148,10 @@ Espaço de estados do sistema não linear:
 \[
     \textbf{y} = g(\textbf{x(t)}, \textbf{{u(t)}}) = 
     \begin{bmatrix}
+        g_1(\textbf{x(t)}, \textbf{u(t)}) \\
+        g_2(\textbf{x(t)}, \textbf{u(t)})
+    \end{bmatrix} =
+    \begin{bmatrix}
         x_1 \\
         x_2
     \end{bmatrix}
@@ -140,17 +161,17 @@ Espaço de estados do sistema não linear:
     \centering
     \includegraphics[width=0.5\textwidth]{imagens/veiculo_4rodas.png}
     \caption{Veículo com quatro rodas.}
-    \label{fig:meu_diagrama}
+    \label{fig:veiculo_com_4rodas}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.5\textwidth]{imagens/veiculo_simplificado.png}
     \caption{Veículo simplificado.}
-    \label{fig:meu_diagrama}
+    \label{fig:meu_diagrama_simplificado}
 \end{figure}
 
-Para $x_1$ e $x_2$ que são as posições no eixo horizontal e vertical, respectivamente, suas derivadas são as componentes da velocidade do centro de massa do veículo. Para $\theta$ que é a orientação do veículo, temos que sua derivada é a velocidade angular de rotação $\omega$.
+A obtenção do modelo de espaço de estados para este sistema envolve a decomposição da velocidade do centro de massa em componentes longitudinal e lateral, e o cálculo da taxa de orientação ($\dot{\theta}$) utilizando o Centro Instantâneo de Rotação (CIR). As equações resultantes são não lineares e descrevem como as variáveis de estado mudam com base nas entradas.
 
 \[
     \dot{\textbf{x}} =
@@ -248,35 +269,360 @@ Reescrevendo as equações utilizando o vetor de estado e o vetor de entrada:
     \dot{x_3} = \frac{u_1 \cdot \sin{(\arctan(\frac{a \cdot \tan(u_2)}{b}))}}{a}
 \]
 
-\begin{lstlisting}[caption = {Código da Questão 1.1}, label={code:t1q1}]
-Codigo aqui!
-\end{lstlisting}
-
 \subsection*{\sc Questão 1.2}
 
 \subsubsection*{\sc Solução}
 
-\begin{lstlisting}[caption = {Código da Questão 1.2}, label={code:t1q2}]
-Codigo aqui!
-\end{lstlisting}
+Para esta resolução, iremos realizar a análise do ponto de equilíbrio do sistema. Como a questão pede, vamos dividir a análise em duas etapas: A verificação de equilíbrio para uma entrada constante e a determinação do ponto de equilíbrio para a condição de movimento retilíneo.
+\\\\
+Antes de iniciar os cálculos, é fundamental definir o que é um ponto de equilíbrio. Um sistema dinâmico, descrito por um vetor de estados $\vec{x}$, está em um ponto de equilíbrio quando a taxa de variação de todos os seus estados é nula. Matematicamente, isso é expresso como:
+\begin{equation}
+    \dot{\vec{x}} = \vec{0}
+\end{equation}
+Para o nosso sistema, isso significa que as três condições a seguir devem ser satisfeitas simultaneamente:
+$$ \dot{x_1} = 0, \quad \dot{x_2} = 0, \quad \dot{x_3} = 0 $$
+\\\\\\ 
+Para a resolução, nos são dados os seguintes valores: $\bar{u} = [v, \delta] = [10 \text{ m/s}, 0.1 \text{ rad}]$.
+\\\\
+A estratégia consiste em verificar se todas as derivadas de estado são nulas, caso uma delas não seja, podemos concluir que para a entrada dada não há equilíbrio.
+\\\\
+A equação para $\dot{x_3}$ obtida na resolução da Questão 1.1 é:
+\begin{equation} \label{eq:x3_dot}
+    \dot{x_3} = \frac{u_1 \cdot \sin\left(\arctan\left(\frac{a \cdot \tan(u_2)}{b}\right)\right)}{a}
+\end{equation}
+Substituindo os valores fornecidos ($u_1 = 10$, $u_2 = 0.1$, $a = 1.5$, $b = 3.0$):
+\begin{equation}
+    \dot{x_3} = \frac{10 \cdot \sin\left(\arctan\left(\frac{1.5 \cdot \tan(0.1)}{3.0}\right)\right)}{1.5}
+\end{equation}
+Analisando a expressão no numerador:
+\begin{itemize}
+    \item O termo $\tan(0.1)$ é um número positivo.
+    \item O argumento da função $\arctan$ é, portanto, um número positivo.
+    \item O $\arctan$ de um número positivo é um ângulo positivo.
+    \item O $\sin$ de um ângulo pequeno e positivo também é um número positivo.
+\end{itemize}
+Dessa forma, o numerador é um número diferente de zero. Como o denominador também não é zero, a expressão final para $\dot{x_3}$ é diferente de zero.
+\\\\
+Portanto, como $\dot{x_3} \neq 0$, a orientação do veículo está em constante mudança. Isso viola a condição de equilíbrio. Dessa forma, não é possível encontrar um estado de equilíbrio para o sistema com a entrada constante fornecida.
+\\\\
+A segunda etapa da análise nos pede para encontrar o ponto de equilíbrio para os estados $(x_2, x_3)$ e a entrada $u_2$ que satisfazem a condição de movimento em linha reta com $\theta = 0$.
+\\\\
+Aqui, o processo é inverso. Partimos da condição de equilíbrio desejada para encontrar a entrada que a causa. A condição para movimento retilíneo é que a orientação seja constante, o que implica em uma velocidade angular nula, $\dot{x_3} = 0$.
+\\\\
+Utilizando a Equação \ref{eq:x3_dot} e igualando-a a zero:
+$$ \frac{u_1 \cdot \sin\left(\arctan\left(\frac{a \cdot \tan(u_2)}{b}\right)\right)}{a} = 0 $$
+Como $u_1 \neq 0$ e $a \neq 0$, a fração só pode ser nula se a parcela for nula:
+$$ \sin\left(\arctan\left(\frac{a \cdot \tan(u_2)}{b}\right)\right) = 0 $$
+A função seno é zero somente quando seu argumento é zero:
+$$ \arctan\left(\frac{a \cdot \tan(u_2)}{b}\right) = 0 $$
+A função arcotangente é zero somente quando seu argumento é zero:
+$$ \frac{a \cdot \tan(u_2)}{b} = 0 $$
+Como $a$ e $b$ não são nulos, a única possibilidade é:
+$$ \tan(u_2) = 0 \implies \bar{u}_2 = 0 $$
+Portanto, a entrada de equilíbrio para o volante é $\bar{u}_2 = 0$ radianos.
+\\\\
+Com a entrada de equilíbrio em mãos, determinamos os estados correspondentes.
+\begin{itemize}
+    \item Para $x_3$ (Orientação): O enunciado define o cenário de interesse como um caminho reto onde $\theta=0$. Logo, o estado de equilíbrio para a orientação é $\bar{x}_3 = 0$.
+    \item Para $x_2$ (Posição Lateral): Devemos verificar a consistência, garantindo que $\dot{x_2}=0$ nessas condições. A equação para $\dot{x_2}$ é:
+    \begin{equation}
+        \dot{x_2} = u_1 \cdot \sin\left(\arctan\left(\frac{a \cdot \tan(u_2)}{b}\right) + x_3\right)
+    \end{equation}
+    Substituindo os valores de equilíbrio $\bar{u}_2 = 0$, $\bar{x}_3 = 0$ e $u_1 = 10$:
+    $$ \dot{x_2} = 10 \cdot \sin\left(\arctan\left(\frac{1.5 \cdot \tan(0)}{3.0}\right) + 0\right) $$
+    $$ \dot{x_2} = 10 \cdot \sin\left(\arctan(0) + 0\right) = 10 \cdot \sin(0) = 0 $$
+    Como $\dot{x_2}=0$, a velocidade lateral é nula, confirmando o equilíbrio. Definimos a trajetória retilínea sobre o eixo x do sistema de coordenadas, resultando no estado de equilíbrio para a posição lateral $\bar{x_2} = 0$.
+\end{itemize}
+
+
+Concluindo, a análise nos permite definir que o ponto de equilíbrio para os estados de interesse $(x_2, x_3)$, sob a condição de movimento retilíneo com $\theta=0$, é:
+$$ (\bar{x}_2, \bar{x}_3) = (0, 0) $$
+Este equilíbrio é alcançado com uma entrada de controle no volante de:
+$$ \bar{u}_2 = 0 \text{ rad} $$
 
 \subsection*{\sc Questão 1.3}
 
 \subsubsection*{\sc Solução}
 
-\begin{lstlisting}[caption = {Código da Questão 1.3}, label={code:t1q3}]
-Codigo aqui!
-\end{lstlisting}
+Nesta seção, determinaremos as matrizes (A, B, C, D) do sistema linearizado em torno do ponto de equilíbrio encontrado na questão anterior.
+
+O modelo não linear da Questão 1.1 é preciso, mas matematicamente complexo. A linearização é uma técnica para criar um modelo linear muito mais simples, que aproxima o comportamento do sistema real em uma pequena região em torno de um ponto de operação específico (o ponto de equilíbrio). Uma analogia seria um zoom aplicado em uma estrada curva em um mapa. Este modelo linear é representado pela forma padrão de espaço de estados:
+$$ \dot{\delta x} = A \cdot \delta x + B \cdot \delta u $$
+$$ \delta y = C \cdot \delta x + D \cdot \delta u $$
+As matrizes A e B são obtidas pelo cálculo das derivadas parciais (o Jacobiano) das funções de estado, avaliadas no ponto de equilíbrio. Cada elemento dessas matrizes representa a "influência" ou "sensibilidade" de uma variável sobre a outra.
+\\\\
+Os cálculos serão realizados em torno do ponto de equilíbrio:
+$$ (\bar{x}_2, \bar{x}_3) = (0, 0), \quad \bar{u}_2 = 0, \quad \text{com o parâmetro } \bar{u}_1 = v = 10 \text{ m/s} $$
+\\\\
+A matriz A mede como os estados influenciam a taxa de mudança uns dos outros.
+$$ A = \begin{pmatrix} \frac{\partial \dot{x_2}}{\partial x_2} & \frac{\partial \dot{x_2}}{\partial x_3} \\ \frac{\partial \dot{x_3}}{\partial x_2} & \frac{\partial \dot{x_3}}{\partial x_3} \end{pmatrix}_{(\bar{x}, \bar{u})} $$
+Avaliando cada elemento:
+\begin{itemize}
+    \item $\mathbf{A_{11} = \frac{\partial \dot{x_2}}{\partial x_2}}$: A equação de $\dot{x_2}$ não depende de $x_2$, logo a derivada é $\mathbf{0}$.
+    \item $\mathbf{A_{12} = \frac{\partial \dot{x_2}}{\partial x_3}}$: Mede a influência da orientação na velocidade lateral.
+    $$ \frac{\partial}{\partial x_3} \left( u_1 \sin(x_3 + \alpha) \right) = u_1 \cos(x_3 + \alpha) $$
+    No ponto de equilíbrio ($u_1=10, x_3=0, \alpha=0$): $A_{12} = 10 \cdot \cos(0 + 0) = \mathbf{10}$.
+    \item $\mathbf{A_{21} = \frac{\partial \dot{x_3}}{\partial x_2}}$: A equação de $\dot{x_3}$ não depende de $x_2$, logo a derivada é $\mathbf{0}$.
+    \item $\mathbf{A_{22} = \frac{\partial \dot{x_3}}{\partial x_3}}$: A equação de $\dot{x_3}$ não depende de $x_3$, logo a derivada é $\mathbf{0}$.
+\end{itemize}
+Portanto, a matriz de estados é:
+\begin{equation}
+    A = \begin{pmatrix} 0 & 10 \\ 0 & 0 \end{pmatrix}
+\end{equation}
+\\\\
+A matriz B mede como a entrada (volante, $u_2$) influencia a taxa de mudança dos estados.
+$$ B = \begin{pmatrix} \frac{\partial \dot{x_2}}{\partial u_2} \\ \frac{\partial \dot{x_3}}{\partial u_2} \end{pmatrix}_{(\bar{x}, \bar{u})} $$
+Avaliando cada elemento:
+\begin{itemize}
+    \item $\mathbf{B_1 = \frac{\partial \dot{x_2}}{\partial u_2}}$: Mede a influência do volante na velocidade lateral. Usando a regra da cadeia:
+    $$ \frac{\partial \dot{x_2}}{\partial u_2} = \frac{\partial}{\partial u_2} \left( u_1 \sin(x_3 + \alpha) \right) = u_1 \cos(x_3 + \alpha) \cdot \frac{\partial \alpha}{\partial u_2} $$
+    No equilíbrio, o primeiro termo é $10 \cos(0)=10$. A derivada $\frac{\partial \alpha}{\partial u_2}$ no equilíbrio é $\frac{a}{b} = \frac{1.5}{3.0} = 0.5$.
+    Logo, $B_1 = 10 \cdot 0.5 = \mathbf{5}$.
+    
+    \item $\mathbf{B_2 = \frac{\partial \dot{x_3}}{\partial u_2}}$: Mede a influência do volante na velocidade de rotação. Usando a equação de $\dot{x_3}$ da sua resolução e aplicando a regra da cadeia:
+    $$ \frac{\partial \dot{x_3}}{\partial u_2} = \frac{\partial}{\partial u_2} \left( \frac{u_1 \sin(\alpha)}{a} \right) = \frac{u_1 \cos(\alpha)}{a} \cdot \frac{\partial \alpha}{\partial u_2} $$
+    No ponto de equilíbrio ($u_1=10, a=1.5, \alpha=0$) e com $\frac{\partial \alpha}{\partial u_2} = 0.5$:
+    $$ B_2 = \frac{10 \cdot \cos(0)}{1.5} \cdot 0.5 = \frac{10 \cdot 1}{1.5} \cdot 0.5 = \frac{10}{3} \approx \mathbf{3.33} $$
+\end{itemize}
+Portanto, a matriz de entrada é:
+\begin{equation}
+    B = \begin{pmatrix} 5 \\ 10/3 \end{pmatrix}
+\end{equation}
+\\\\
+As matrizes C e D definem como os estados são observados. Definiremos a saída de interesse como sendo apenas a posição lateral, $y = x_2$.
+
+\begin{itemize}
+    \item \textbf{Matriz C:} A saída de interesse é o estado $y = x_2$. Para extrair o primeiro estado ($x_2$) do vetor de estados $\tilde{x} = [x_2, x_3]^T$ através da operação $y = C \cdot \tilde{x}$, a matriz C deve ser um vetor linha.
+    \begin{equation}
+        C = \begin{pmatrix} 1 & 0 \end{pmatrix}
+    \end{equation}
+
+    \item \textbf{Matriz D:} Representa a influência direta da entrada na saída. Virar o volante ($u_2$) não muda a posição lateral ($y=x_2$) instantaneamente, apenas a sua taxa de mudança. Portanto, não há alimentação direta e, como o sistema agora é SISO, D é um escalar nulo.
+    \begin{equation}
+        D = 0
+    \end{equation}
+\end{itemize}
+
+\subsection*{Conclusão da Tarefa}
+O sistema linearizado (A, B, C, D) que aproxima o comportamento do veículo em torno do ponto de equilíbrio de movimento retilíneo, configurado como um sistema de entrada e saída única, é definido pelas seguintes matrizes:
+$$ A = \begin{pmatrix} 0 & 10 \\ 0 & 0 \end{pmatrix}, \quad B = \begin{pmatrix} 5 \\ 10/3 \end{pmatrix}, \quad C = \begin{pmatrix} 1 & 0 \end{pmatrix}, \quad D = 0 $$
 
 \subsection*{\sc Questão 1.4}
 
 \subsubsection*{\sc Solução}
 
-\begin{lstlisting}[caption = {Código da Questão 1.4}, label={code:t1q4}]
-Codigo aqui!
-\end{lstlisting}
+Nesta seção, o objetivo é simular e comparar as respostas do sistema em suas representações linear e não linear. Para que a comparação seja significativa, algumas especificações foram definidas com base no sistema linear e também serão adotadas na simulação do sistema não linear.
 
-\newpage
+As especificações consideradas são:
+\begin{itemize}
+    \item velocidade constante \( v = 10 \, \text{m/s} \);
+    \item saída do sistema dada por \( y(t) = x_2(t) \);
+    \item entrada única \( u_2(t) = A \), onde \( A \) representa a amplitude de um degrau aplicado igualmente a ambos os sistemas.
+\end{itemize}
+
+A amplitude \( A \) corresponde ao ângulo, em radianos, da direção da roda dianteira. Por esse motivo, valores pequenos de \( u_2 \) garantem maior proximidade entre os comportamentos do modelo linear e do não linear, permitindo uma comparação mais coerente.
+\\\\
+Para simular a resposta de um sistema dinâmico, seja ele linear ou não linear, precisamos resolver suas equações diferenciais. No caso de sistemas não lineares, a abordagem numérica é geralmente a mais viável, enquanto para sistemas lineares, podemos usar a saída a partir do espaço de estados linearizado.
+\\\\
+Para o sistema não linear, vamos focar na variável de estado $x_2(t)$. A equação diferencial dessa variável de estado, obtida na Questão 1.1, será resolvida utilizando a função \texttt{solve\_ivp()} da biblioteca SciPy em Python para obter os resultados no intervalo de tempo de 0 a 5 segundos. Este método é robusto para resolver Equações Diferenciais Ordinárias (EDOs) e é especialmente útil para sistemas não lineares onde soluções analíticas são complexas.
+\\\\
+A simulação do sistema linear é baseada no espaço de estados obtido após a linearização na Questão 1.3. As equações de estado são dadas por:
+
+$$
+\dot{\textbf{x}} = A\textbf{x}+B\textbf{u}
+$$
+
+$$
+\textbf{y} = C\textbf{x} + D\textbf{u}
+$$
+
+Substituindo pelas matrizes calculadas:
+
+$$
+\dot{\textbf{x}} = \begin{bmatrix} 0 & 10 \\ 0 & 0 \end{bmatrix} \cdot \textbf{x} + \begin{bmatrix} 5 \\ 10/3 \end{bmatrix} \cdot \textbf{u}
+$$
+
+$$
+\textbf{y} = \begin{bmatrix} 1 & 0 \end{bmatrix} \cdot \textbf{x} + 0 \cdot \textbf{u}
+$$
+
+Para resolver $y(t)$, podemos aplicar a Transformada de Laplace, admitindo condições iniciais nulas, conforme o Capítulo 3, Seção 6 do livro "Engenharia de Sistemas de Controle" de Nise.
+\\\\
+Aplicando a Transformada de Laplace às equações de estado, obtemos:
+
+$$
+s\textbf{X}(s) = \textbf{AX}(s) + \textbf{BU}(s)
+$$
+
+$$
+\textbf{Y}(s) = \textbf{CX}(s) + \textbf{DU}(s)
+$$
+
+Resolvendo para $\textbf{X}(s)$:
+
+$$
+(s\textbf{I} - \textbf{A})\textbf{X}(s) = \textbf{BU}(s)
+$$
+
+$$
+\textbf{X}(s) = (s\textbf{I} - \textbf{A})^{-1}\textbf{BU}(s)
+$$
+
+Agora, substituímos $\textbf{X}(s)$ na equação de saída para encontrar $\textbf{Y}(s)$:
+
+$$
+\textbf{Y}(s) = \textbf{C}(s\textbf{I} - \textbf{A})^{-1}\textbf{BU}(s) + \textbf{DU}(s)
+$$
+
+Vamos calcular $(s\textbf{I} - \textbf{A})$:
+
+$$
+(s\textbf{I} - \textbf{A}) = s\begin{bmatrix} 1 & 0 \\ 0 & 1 \end{bmatrix} - \begin{bmatrix} 0 & 10 \\ 0 & 0 \end{bmatrix} = \begin{bmatrix} s & -10 \\ 0 & s \end{bmatrix}
+$$
+
+Para calcular a inversa de $(s\textbf{I} - \textbf{A})$, utilizamos a expressão:
+
+$$
+(s\textbf{I} - \textbf{A})^{-1} = \frac{\text{adj}(s\textbf{I} - \textbf{A})}{\text{det}(s\textbf{I} - \textbf{A})}
+$$
+
+O determinante de $(s\textbf{I} - \textbf{A})$ é $s \cdot s - (-10) \cdot 0 = s^2$. A matriz adjunta é obtida trocando os elementos da diagonal principal e multiplicando os elementos da diagonal secundária por -1:
+
+$$
+\text{adj}(s\textbf{I} - \textbf{A}) = \begin{bmatrix} s & 10 \\ 0 & s \end{bmatrix}
+$$
+
+Portanto, a inversa é:
+
+$$
+(s\textbf{I} - \textbf{A})^{-1} = \frac{1}{s^2}\begin{bmatrix} s & 10 \\ 0 & s \end{bmatrix} = \begin{bmatrix} \dfrac{1}{s} & \dfrac{10}{s^2} \\ 0 & \dfrac{1}{s} \end{bmatrix}
+$$
+
+Finalmente, substituímos na expressão para $\textbf{Y}(s)$. Considerando $\textbf{u}$ como uma entrada degrau com amplitude A, ou seja, $U(s) = A/s$, e como $D=0$:
+
+$$
+\textbf{Y}(s) = \begin{bmatrix} 1 & 0 \end{bmatrix} \begin{bmatrix} \dfrac{1}{s} & \dfrac{10}{s^2} \\ 0 & \dfrac{1}{s} \end{bmatrix} \begin{bmatrix} 5 \\ 10/3 \end{bmatrix} U(s)
+$$
+
+Primeiro, multiplicamos as matrizes:
+
+$$
+\begin{bmatrix} 1 & 0 \end{bmatrix} \begin{bmatrix} \dfrac{1}{s} & \dfrac{10}{s^2} \\ 0 & \dfrac{1}{s} \end{bmatrix} = \begin{bmatrix} \dfrac{1}{s} & \dfrac{10}{s^2} \end{bmatrix}
+$$
+
+Obtemos o resultado da operação:
+
+$$
+\textbf{Y}(s) = \begin{bmatrix} \dfrac{1}{s} & \dfrac{10}{s^2} \end{bmatrix} \begin{bmatrix} 5 \\ 10/3 \end{bmatrix} U(s)
+$$
+
+$$
+\textbf{Y}(s) = \left( \dfrac{1}{s} \cdot 5 + \dfrac{10}{s^2} \cdot \dfrac{10}{3} \right) U(s)
+$$
+
+$$
+\textbf{Y}(s) = \left( \dfrac{5}{s} + \dfrac{100}{3s^2} \right) U(s)
+$$
+
+Assumindo que $\textbf{u}$ é uma entrada de degrau, $U(s) = \frac{A}{s}$:
+
+$$
+\textbf{Y}(s) = \left( \dfrac{5}{s} + \dfrac{100}{3s^2} \right) \frac{A}{s}
+$$
+
+$$
+\textbf{Y}(s) = \dfrac{5\cdot A}{s^2} + \dfrac{100 \cdot A}{3s^3}
+$$
+
+Para encontrar $y(t)$, aplicamos a Transformada Inversa de Laplace:
+
+$$
+y(t) = \mathcal{L}^{-1} \left\{ \dfrac{5\cdot A}{s^2} + \dfrac{100 \cdot A}{3s^3} \right\}
+$$
+
+Sabemos que $\mathcal{L}^{-1} \left\{ \dfrac{1}{s^2} \right\} = t$ e $\mathcal{L}^{-1} \left\{ \dfrac{1}{s^3} \right\} = \dfrac{t^2}{2!}$.
+
+Portanto,
+
+$$
+y(t) = A \cdot 5t + A \cdot\dfrac{100}{3} \cdot \dfrac{t^2}{2}
+$$
+
+$$
+y(t) = A \cdot 5t + A \cdot \dfrac{50}{3}t^2
+$$
+
+Este é o valor de $y(t)$ para o sistema linearizado sob uma entrada de degrau, assumindo condições iniciais nulas.
+\\\\
+Considerando o mesmo intervalo de tempo de 0 a 5 segundos para as duas representações, plotamos os comportamentos das respostas a seguir.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{imagens/simulacao-linear-naolinear.png}
+    \caption{$x_2$ - Simulação do sistema Não Linear e Linear.}
+    \label{fig:simulacao-linear-naolinear}
+\end{figure}
+
+Ao analisar o gráfico, é evidente que, para o intervalo de tempo inicial (aproximadamente até 2.5 a 3 segundos), a resposta do sistema linearizado se aproxima significativamente da resposta do sistema não linear. Essa proximidade inicial é esperada, visto que a linearização de um sistema é uma aproximação válida em torno do ponto de equilíbrio.
+
+\begin{lstlisting}[caption = {Código da Questão 1.4}]
+import numpy as np
+from scipy.integrate import solve_ivp
+import matplotlib.pyplot as plt
+
+# Parametros do sistema
+a = 1.5
+b = 3.0
+u1_const = 10.0 
+
+# Amplitude do degrau para o volante (u2)
+A = 0.05 
+
+# Intervalo de tempo
+t_span = [0, 5]
+t_eval = np.linspace(t_span[0], t_span[1], 500)
+
+# Simulacao do Sistema NAO LINEAR
+def nonlinear_model(t, x, u1, u2):
+    x2, x3 = x
+    alpha = np.arctan((a * np.tan(u2)) / b)
+    dx2_dt = u1 * np.sin(alpha + x3)
+    dx3_dt = (u1 * np.sin(alpha)) / a
+    return [dx2_dt, dx3_dt]
+
+x0_nonlinear = [0, 0]
+sol_nonlinear = solve_ivp(
+    lambda t, x: nonlinear_model(t, x, u1_const, A),
+    t_span,
+    x0_nonlinear,
+    t_eval=t_eval
+)
+x2_nonlinear = sol_nonlinear.y[0]
+# x3_nonlinear = sol_nonlinear.y[1]
+
+# Simulacao do Sistema Linearizado
+# Expressoes obtidas a partir do estado de espacos formado apos linearizacao
+def funcao_x2_modelo_linear(t, A):
+    return (5*t + t**2 * 50/3)*A
+
+# def funcao_x3_modelo_linear(t, A):
+#     return (10 * A * t) / 3
+
+plt.style.use('seaborn-v0_8-whitegrid')
+plt.figure(figsize=(7, 5))
+
+# Grafico de X2 (Posicao Lateral)
+plt.plot(t_eval, x2_nonlinear, 'b-', label='Nao Linear', linewidth=2.5)
+plt.plot(t_eval, funcao_x2_modelo_linear(t_eval, A), 'r--', label='Linearizado', linewidth=2)
+plt.title(f'Comparacao das Respostas para um Degrau de Amplitude A = {A} rad', fontsize=14)
+plt.ylabel('Posicao Lateral $x_2(t)$ (m)', fontsize=12)
+plt.xlabel('Tempo $t$ (s)', fontsize=12)
+plt.legend()
+plt.grid(True)
+
+plt.tight_layout()
+plt.show()
+\end{lstlisting}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section*{\sc Tarefa 2: Análise Dinâmica}
