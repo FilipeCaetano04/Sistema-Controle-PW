@@ -839,7 +839,7 @@ Para verificar a controlabilidade de um sistema, você utiliza a Matriz de Contr
 \\\\
 O modelo linearizado e reduzido do seu sistema, focado em $x_2$ e $x_3$, possui as seguintes matrizes A e B: $A = \begin{bmatrix} 0 & 10 \\ 0 & 0 \end{bmatrix}$ $B = \begin{bmatrix} 5 \\ 10/3 \end{bmatrix}$.
 \\\\
-O número de variáveis de estado ($n$) é 2 e a matriz de controlabilidade $C_M$ é $[B \quad AB]$
+O número de variáveis de estado ($n$) é 2 e a matriz de controlabilidade $C_M$ é $[B \quad AB]$.
 \\\\
 Resolvendo AB:
 \[
@@ -882,33 +882,223 @@ Uma vez que o posto é igual ao número de variáveis de estado, o modelo linear
 
 \subsubsection*{\sc Solução}
 
-\begin{lstlisting}[caption = {Código da Questão 3.1}, label={code:t3q1}]
-Codigo aqui!
-\end{lstlisting}
+Para a elaboração do diagrama de blocos do nosso sistema de controle, é fundamental compreender a função e a interconexão de cada componente. Abaixo, detalhamos os elementos essenciais e sua relevância para o sistema.
+\\\\
+O sistema a ser controlado, ou planta, é o próprio veículo. Suas dinâmicas são representadas pelo modelo linearizado obtido anteriormente. Este modelo descreve o comportamento do veículo em termos de desvios, focando especificamente na posição lateral ($x_2(t)$) e na orientação ($x_3(t)$). A entrada ($u$) que manipula essas variáveis é o desvio no ângulo de direção ($\delta$) da roda dianteira.
+\\\\
+O transmissor ou sensor é o componente responsável por medir a variável de saída do sistema, que será utilizada para realimentação no controlador. No nosso caso, a saída controlada é a posição lateral do veículo, $x_2(t)$. Portanto, o sensor medirá essa posição lateral e enviará essa informação ao controlador.
+\\\\
+O controlador desempenha um papel central no sistema. Ele recebe dois sinais: a saída desejada (referência) e a saída medida pelo sensor. Com base na diferença entre esses dois sinais (o erro), o controlador gera um sinal de controle que será enviado ao atuador. Um objetivo primordial do nosso projeto é que o controlador não apenas estabilize o sistema, mas também o mantenha dentro de uma faixa de valores com um erro de estado estacionário previsto, conforme as especificações.
+\\\\
+Por fim, o atuador é o elemento que converte o sinal de controle recebido do controlador em uma ação física no sistema. A entrada manipulada para o controle do veículo é o ângulo de direção ($\delta(t)$) da roda dianteira. Sendo assim, o atuador corresponde ao mecanismo de direção do veículo, que fisicamente ajusta o ângulo das rodas dianteiras em resposta ao sinal de controle.
+\\\\
+Após contextualizar os elementos importantes para o diagrama, temos: 
+\begin{figure}[H] % [h!] tenta colocar a figura "aqui" (here)
+    \centering % Centraliza a imagem
+    \includegraphics[width=0.8\textwidth]{imagens/Diagrama de Blocos.drawio (3).pdf} % Inclui o PDF como imagem
+    \caption{Diagrama de Blocos do Sistema de Controle.} % Legenda para a figura
+    \label{fig:diagrama_blocos} % Rótulo para referências cruzadas
+\end{figure}
 
 \subsection*{\sc Questão 3.2}
 
 \subsubsection*{\sc Solução}
 
-\begin{lstlisting}[caption = {Código da Questão 3.2}, label={code:t3q2}]
-Codigo aqui!
-\end{lstlisting}
+O erro de estado estacionário ($e(\infty)$) é a diferença entre a entrada desejada (referência) e a saída real do sistema depois que o tempo de resposta transitória se esgotou, ou seja, quando $t \to \infty$. Ele representa a precisão do sistema em malha fechada em rastrear uma entrada específica.
+\\\\
+Considerando o erro do ponto de vista do diagrama de blocos.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{imagens/sistema-malha-fechada.png}
+    \caption{Sistema de malha fechada com feedback unitário.}
+    \label{fig:simulacao-linear-naolinear}
+\end{figure}
+\begin{itemize}
+    \item $R(s)$ é a entrada
+    \item $C(s) = E(s)G(s)$ é a saída
+    \item $E(s) = R(s) - C(s)$ é o erro 
+\end{itemize}
+Resolvendo para $E(s)$:
+\[
+    E(s) = \frac{R(s)}{1 + G(s)}
+\]
+Aplicamos o teorema do valor final, para obter:
+\[
+    e(\infty) = \lim_{s \to 0} \frac{sR(s)}{1 + G(s)}
+\]
+Para uma entrada degrau:
+\[
+    e(\infty) = \lim_{s \to 0} \frac{s\frac{1}{s}}{1 + G(s)}
+\]
+\[
+    e(\infty) = \lim_{s \to 0} \frac{1}{1 + G(s)}
+\]
+
+Tendo sido apresentado o requisito de erro de estado estacionário, agora, vamos definir o controlador a ser utilizado. Com base nas especificações que exigem um projeto para obter um erro de estado estacionário de resposta ao degrau de 10\% sem afetar significativamente a resposta transitória, optaremos por um compensador do tipo Lag Compensator (Compensador de Atraso).
+\\\\
+Função de transferência do controlador:
+\[
+    G_{c}(s) = \frac{s+z_c}{s+p_c}
+\]
+Projetando o sistema com controlador:
+\begin{figure}[H] % [h!] tenta colocar a figura "aqui" (here)
+    \centering % Centraliza a imagem
+    \includegraphics[width=0.8\textwidth]{imagens/Diagrama de Blocos-Página-3.drawio (1).pdf} % Inclui o PDF como imagem
+    \caption{Sistema com Controlador.} % Legenda para a figura
+    \label{fig:diagrama_blocos_controlador} % Rótulo para referências cruzadas
+\end{figure}
+Em que T(s) é a função de transferência do nosso sistema em malha fechada com realimentação unitária. Utilizamos T(s) (ou seja, uma abordagem que nos permita influenciar o erro de estado estacionário para um valor diferente de zero), porque, de outro modo, a função de transferência de malha aberta G(s), obtida na questão 2.1, não permitiria um erro de estado estacionário diferente de zero. Isso ocorre porque G(s) possui duas integrações puras no caminho direto da malha, caracterizando-a como um sistema do Tipo 2.
+\\\\
+Explicado o motivo de usarmos $T(s)$ como a função de transferência da planta no cálculo do erro de estado estacionário, temos a expressão para $T(s)$ como:
+\[
+    T(s) = \frac{5s+33.33}{s^2} \cdot \dfrac{1}{1 + \dfrac{5s + 33.33}{s^2}}
+\]
+Simplificando, obtemos:
+\[
+    T(s) = \frac{5s + 33.33}{s^2 + 5s+33.33}
+\]
+
+Para o erro de estado estacionário do sistema em malha fechada para uma entrada degrau, com a inclusão do controlador $G_c(s)$, a fórmula é:
+\[
+    e(\infty) = \lim_{s \to 0} \frac{1}{1 + G_{c}(s)T(s)}
+\]
+Segundo o enunciado, queremos projetar o controlador para obter 10\% de erro de estado estacionário. Assim, temos:
+\[
+    0.1 = \frac{1}{1 + \lim_{s \to 0}G_{c}(s)T(s)}
+\]
+Reorganizando a equação, chegamos a:
+\[
+    1 + \lim_{s \to 0}G_{c}(s)T(s) = 10
+\]
+\[
+    G_{c}(0)T(0) = 9
+\]
+Considerando a forma do compensador de atraso $G_c(s) =\frac{s + z_c}{s + p_c}$ e avaliando $T(s)$ para $s \to 0$:
+\[
+T(0) = \frac{5 \cdot 0 + 33.33}{0^2 + 5 \cdot 0 + 33.33} = \frac{33.33}{33.33} = 1
+\]
+Agora, substituindo $G_c(0)$ e $T(0)$ na equação $G_{c}(0)T(0) = 9$:
+\[
+\frac{0 + z_c}{0 + p_c} \cdot 1 = 9
+\]
+\[
+\frac{z_c}{p_c} = 9
+\]
+O valor $z_c/p_c = 9$ representa o fator de melhoria do erro de estado estacionário que o compensador de atraso deve proporcionar. Pelo padrão desse compensador, sabemos que devemos escolher o zero ($z_c$) e o polo ($p_c$) próximos da origem e no semiplano esquerdo, com o polo mais próximo da origem que o zero ($|p_c| < |z_c|$).
+\\\\
+Para não afetar a resposta transitória de forma apreciável, esses polo e zero devem estar muito próximos da origem e bem afastados dos polos dominantes do sistema. Para isso, vamos assumir o zero do compensador, $z_c$, como 50 vezes menor em magnitude que a parte real do polo dominante do sistema $T(s)$.
+\\\\
+Os polos do sistema são obtidos da equação $s^2 + 5s + 33.33 = 0$, que são:
+\[
+    p = -2.5 \pm 5.2038j
+\]
+Assim, o zero do compensador é calculado como:
+\[
+    z_c = \left| \frac{\text{real}(\text{polo dominante do sistema)}}{50} \right| = \left| \frac{-2.5}{50} \right| = |-0.05| = 0.05
+\]
+Em seguida, para determinar o polo do compensador ($p_c$), utilizamos o fator de melhoria $\frac{z_c}{p_c} = 9$, que foi derivado do requisito de 10\% de erro de estado estacionário:
+\[
+p_c = \frac{z_c}{9} = \frac{0.05}{9} \approx 0.0055
+\]
+Dessa forma, a função de transferência do compensador de atraso projetado ($G_c(s)$) é:
+\[
+G_{c}(s) = \frac{s + 0.05}{s + 0.0055}
+\]
 
 \subsection*{\sc Questão 3.3}
 
 \subsubsection*{\sc Solução}
 
-\begin{lstlisting}[caption = {Código da Questão 3.3}, label={code:t3q3}]
-Codigo aqui!
+Para simular e analisar a resposta ao degrau do sistema, consideraremos as configurações não compensada (sem controlador) e compensada (com o controlador de atraso projetado).
+\\\\
+A função de transferência de malha fechada do sistema não compensado, com realimentação unitária, é dada por $T(s)$:
+\[
+    T(s) = \frac{5s + 33.33}{s^2 + 5s+33.33}
+\]
+Para uma entrada degrau unitário, $U(s)= \frac{1}{s}$, a resposta no domínio de Laplace é:
+\[
+    Y(s) = U(s) \cdot T(s) =\frac{5s + 33.33}{s^2 + 5s+33.33}
+\]
+
+A seguir, é apresentada a resposta ao degrau do sistema não compensado: 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{imagens/resposta-degrau-sem-controlador.png}
+    \caption{Resposta ao degrau sem controlador.}
+    \label{fig:resposta-degrau-sem-controlador}
+\end{figure}
+
+Observa-se que a resposta ao degrau do sistema não compensado se estabiliza em 1. Isso indica que o erro de estado estacionário é zero para entrada degrau unitário.
+\\\\
+Para simular o sistema compensado, aplicando o Lag Compensator $G_c(s) = \frac{s + 0.05}{s + 0.0055}$em cascata com a planta e realimentação unitária, a função de transferência de malha fechada é dada por:
+\[
+    Y(s) = U(s) \cdot \frac{G_c(s)T(S)}{1 + G_c(s)T(S)}
+\]
+Substituindo $G_c(s)$ e $T(s)$ na expressão:
+\[
+    Y(s) = \frac{1}{s} \cdot \frac{5 s^2 + 33.58 s + 1.667}{s^3 + 10.01 s^2 + 66.94 s + 1.852}
+\]
+A seguir, é apresentada a resposta ao degrau do sistema compensado:
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{imagens/resposta-degrau-com-controlador.png}
+    \caption{Resposta ao degrau com controlador.}
+    \label{fig:resposta-degrau-com-controlador}
+\end{figure}
+
+Observa-se que a resposta ao degrau do sistema compensado se estabiliza em 0.9. O resultado indica erro estacionário de cerca de 10\% ($e_{ss} = 1 - 0.9=0.1$) para entrada degrau unitário. Este é o comportamento desejado e a meta do projeto do compensador.
+
+\begin{lstlisting}[caption = {Código da Questão 3.3}]
+import matplotlib.pyplot as plt
+import control as ctr
 \end{lstlisting}
+\begin{lstlisting}[caption = {Código da Questão 3.3}]
+G_s = ctr.tf([5, 33.33], [1, 0, 0])
+print(G_s)
+
+t, y = ctr.step_response(G_s)
+plt.plot(t, y)
+plt.show()
+\end{lstlisting}
+\begin{lstlisting}[caption = {Código da Questão 3.3}]
+G_s_feedback = ctr.feedback(G_s, 1)
+print(G_s_feedback)
+
+polos_G_s_feedback = ctr.poles(G_s_feedback)  
+print(f'\nPolos do feedback de G_s(s): {polos_G_s_feedback}')
+
+t, y = ctr.step_response(G_s_feedback)
+plt.plot(t, y)
+plt.xlabel('Tempo (s)')
+plt.ylabel('Resposta y(t)')
+plt.grid()
+plt.show()
+ctr.step_info(G_s_feedback)
+\end{lstlisting}
+\begin{lstlisting}[caption = {Código da Questão 3.3}]
+G_c = ctr.tf([1, 0.05], [1, 0.005555])
+
+G = G_s_feedback * G_c
+
+G_feedback = ctr.feedback(G, 1)
+print(G_feedback)
+
+t, y = ctr.step_response(G_feedback)
+plt.plot(t, y)
+plt.xlabel('Tempo (s)')
+plt.ylabel('Resposta y(t)')
+plt.grid()
+plt.show()
+ctr.step_info(G_feedback)
+\end{lstlisting}
+
 
 \subsection*{\sc Questão 3.4}
 
 \subsubsection*{\sc Solução}
 
-\begin{lstlisting}[caption = {Código da Questão 3.4}, label={code:t3q4}]
-Codigo aqui!
-\end{lstlisting}
-
+Na elaboração do sistema de controle, a escolha por um compensador de atraso (Lag Compensator) foi motivada pela necessidade de atender a uma especificação clara: garantir um erro de estado estacionário de 10\% frente a uma entrada degrau, sem afetar significativamente a resposta transitória. O sistema original, com função de transferência $G(s)$, por ser de tipo 2 (com duas integrações puras em malha aberta), naturalmente apresentava erro de estado estacionário nulo, o que é incompatível com o erro especificado de 10\%. Por isso, optou-se por usar a função de transferência em malha fechada para projetar o controlador, o que permite ajustar o erro final a um valor diferente de zero.
+\\\\
+O compensador foi projetado de forma que seu zero ($z_c$) ficasse próximo da origem, mas suficientemente afastado dos polos dominantes do sistema para não interferir na dinâmica transitória. O polo ($p_c$), ainda mais próximo da origem, foi escolhido de modo a garantir uma razão $z_c/p_c = 9$, fornecendo exatamente o ganho necessário para atingir o erro de 10\%. A validação foi feita por meio da resposta ao degrau: sem o controlador, a saída final é 1 (erro zero); com o controlador, a resposta se estabiliza em 0.9, resultando em um erro estacionário de 10\%, exatamente como projetado. Esse resultado comprova o sucesso do projeto e a eficácia da estratégia adotada.
 
 \end{document}
