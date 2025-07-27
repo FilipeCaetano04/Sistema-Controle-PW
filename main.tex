@@ -93,7 +93,7 @@
 \subsubsection*{\sc Solução}
 O sistema mecânico descrito nos enunciados é uma representação simplificada de um veículo, frequentemente referido como modelo cinemático de bicicleta devido às suas simplificações geométricas. Um modelo cinemático se concentra nas relações geométricas do movimento, ou seja, como a posição, velocidade e orientação mudam ao longo do tempo, sem considerar as forças ou torques que causam esse movimento.
 \\\\
-Nesta resolução, objetivo é obter um modelo de espaço de estados para o sistema mecânico de direção do veículo. Um modelo de espaço de estados é uma representação matemática de um sistema físico como um conjunto de equações diferenciais de primeira ordem
+Nesta resolução, objetivo é obter um modelo de espaço de estados para o sistema mecânico de direção do veículo. Um modelo de espaço de estados é uma representação matemática de um sistema físico como um conjunto de equações diferenciais de primeira ordem.
 \\\\
 Sistemas dinâmicos como o da questão podem ser descritos por relações entrada-saida ou por variáveis internas denominadas variáveis de estado. O espaço de estados irá nos fornecer um modelo matemático de como o veículo se move.
 \\\\
@@ -204,7 +204,7 @@ A obtenção do modelo de espaço de estados para este sistema envolve a decompo
     \item $\alpha + \theta$: ângulo de direção da velocidade 
 \end{itemize}
 
-Faremos algumas manipulações trigonométricas nas expressões atuais de $\dot{\textbf{x}}$ com o objetivo de deixá-las em função dos parâmetros das variáveis de estado e de entrada do sistema. Observando a Figura~\ref{fig:meu_diagrama}, temos que:
+Faremos algumas manipulações trigonométricas nas expressões atuais de $\dot{\textbf{x}}$ com o objetivo de deixá-las em função dos parâmetros das variáveis de estado e de entrada do sistema. Observando a Figura~\ref{fig:meu_diagrama_simplificado}, temos que:
 \[
     \tan(\delta) = \frac{b}{L'}
 \]
@@ -624,6 +624,8 @@ plt.tight_layout()
 plt.show()
 \end{lstlisting}
 
+\newpage
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section*{\sc Tarefa 2: Análise Dinâmica}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -632,35 +634,245 @@ plt.show()
 
 \subsubsection*{\sc Solução}
 
-\begin{lstlisting}[caption = {Código da Questão 2.1}, label={code:t2q1}]
-Codigo aqui!
-\end{lstlisting}
+Para iniciarmos a análise do sistema, é preciso converter o modelo de espaço de estados linearizado, obtido na Tarefa 1, em uma função de transferência $T(s)$ que relaciona a entrada de controle (ângulo do volante, $u_2$) com a saída de interesse (posição lateral, $x_2$).
+\\\\
+Para chegar à expressão da função transferência, começamos utilizando a propriedade da derivada no domínio de Laplace, $\mathcal{L}\{\dot{f}(t)\} = sF(s) - f(0)$, na Equação (1):
+\begin{align*}
+    \mathcal{L}\{\dot{\mathbf{x}}(t)\} &= \mathcal{L}\{A\mathbf{x}(t) + B\mathbf{u}(t)\} \\
+    s\mathbf{X}(s) - \mathbf{x}(0) &= A\mathbf{X}(s) + B\mathbf{U}(s)
+\end{align*}
 
+Assumindo que o estado inicial do sistema é nulo, ou seja, $\mathbf{x}(0) = \mathbf{0}$. Isso simplifica a equação anterior para:
+\begin{equation*}
+    s\mathbf{X}(s) = A\mathbf{X}(s) + B\mathbf{U}(s)
+\end{equation*}
+
+Realizando manipulações algébricas na equação, chegamos a:
+$\mathbf{X}(s)$:
+\begin{equation*}
+    \mathbf{X}(s) = (sI - A)^{-1}B\mathbf{U}(s)
+\end{equation*}
+
+Para a equação de saída, aplicamos também a transformada:
+\begin{align*}
+    \mathcal{L}\{\mathbf{y}(t)\} &= \mathcal{L}\{C\mathbf{x}(t) + D\mathbf{u}(t)\} \\
+    \mathbf{Y}(s) &= C\mathbf{X}(s) + D\mathbf{U}(s)
+\end{align*}
+
+Substituindo $\mathbf{X}(s)$ pela equação encontrada e realizando manipulações chegamos em:
+
+\begin{equation*}
+    \mathbf{Y}(s) = \left[ C(sI - A)^{-1}B + D \right] \mathbf{U}(s)
+\end{equation*}
+Ao reorganizar a equação para a forma $\frac{\mathbf{Y}(s)}{\mathbf{U}(s)}$, obtemos a fórmula final para a função de transferência:
+\begin{equation*}
+    \boxed{G(s) = C(sI - A)^{-1}B + D}
+\end{equation*}
+
+Onde $I$ é a matriz identidade.\\
+
+
+As matrizes do nosso sistema linearizado, conforme derivado e ajustado na Tarefa 1, são:
+$$ A = \begin{pmatrix} 0 & 10 \\ 0 & 0 \end{pmatrix}, \quad B = \begin{pmatrix} 5 \\ 10/3 \end{pmatrix}, \quad C = \begin{pmatrix} 1 & 0 \end{pmatrix}, \quad D = 0 $$
+
+Prosseguindo, calculamos a matriz característica do sistema.
+\begin{align*}
+    sI - A &= s\begin{pmatrix} 1 & 0 \\ 0 & 1 \end{pmatrix} - \begin{pmatrix} 0 & 10 \\ 0 & 0 \end{pmatrix} \\
+           &= \begin{pmatrix} s & 0 \\ 0 & s \end{pmatrix} - \begin{pmatrix} 0 & 10 \\ 0 & 0 \end{pmatrix} \\
+           &= \begin{pmatrix} s & -10 \\ 0 & s \end{pmatrix}
+\end{align*}
+
+Agora, calculamos a inversa da matriz encontrada. Para uma matriz 2x2, $\begin{pmatrix} a & b \\ c & d \end{pmatrix}$, a inversa é $\frac{1}{ad-bc}\begin{pmatrix} d & -b \\ -c & a \end{pmatrix}$.
+O determinante de $(sI - A)$ é:
+$$ \det(sI - A) = (s)(s) - (-10)(0) = s^2 $$
+Portanto, a matriz inversa é:
+\begin{equation}
+    (sI - A)^{-1} = \frac{1}{s^2} \begin{pmatrix} s & 10 \\ 0 & s \end{pmatrix}
+\end{equation}
+
+Em seguida, primeiramente multiplicamos a inversa pela matriz C:
+\begin{align*}
+    C(sI - A)^{-1} &= \begin{pmatrix} 1 & 0 \end{pmatrix} \cdot \frac{1}{s^2} \begin{pmatrix} s & 10 \\ 0 & s \end{pmatrix} \\
+                   &= \frac{1}{s^2} \begin{pmatrix} (1 \cdot s + 0 \cdot 0) & (1 \cdot 10 + 0 \cdot s) \end{pmatrix} \\
+                   &= \frac{1}{s^2} \begin{pmatrix} s & 10 \end{pmatrix}
+\end{align*}
+depois multiplicamos o resultado pela matriz B:
+\begin{align*}
+    [C(sI - A)^{-1}]B &= \frac{1}{s^2} \begin{pmatrix} s & 10 \end{pmatrix} \cdot \begin{pmatrix} 5 \\ 10/3 \end{pmatrix} \\
+                     &= \frac{1}{s^2} \left( (s \cdot 5) + (10 \cdot \frac{10}{3}) \right) \\
+                     &= \frac{5s + \frac{100}{3}}{s^2}
+\end{align*}
+
+O passo final é somar o termo D, que no nosso caso é 0.
+$$ G(s) = \frac{5s + \frac{100}{3}}{s^2} + 0 $$
+
+Após realizarmos estes cálculos, chegamos à seguinte função de transferência:
+\begin{equation}
+    G(s) = \frac{5s + \frac{100}{3}}{s^2} \approx \frac{5s + 33.33}{s^2}
+\end{equation}
+\newpage
+
+\begin{figure}[h!]
+     \centering
+     \includegraphics[width=0.7\textwidth]{imagens/Plot_t2q1.png}
+\end{figure}
+
+\begin{lstlisting}[caption = {Código da Questão 2.1}, label={code:t2q1}]
+
+import control as ct
+import matplotlib.pyplot as plt
+import numpy as np
+
+
+# A funcao de transferencia calculada foi T(s) = (5s + 33.33) / s^2
+
+#coeficientes
+num = [5, 100/3]
+den = [1, 0, 0]
+
+T = ct.tf(num, den)
+
+#print(T)
+
+#escolhido por padrao da .step_response degrau de amplitude 1.
+t, y = ct.step_response(T)
+
+
+plt.figure(figsize=(10, 6))
+plt.plot(t, y, linewidth=2, label='Resposta ao Degrau')
+
+plt.title('Resposta ao Degrau do Sistema Linearizado', fontsize=16)
+plt.xlabel('Tempo (s)', fontsize=12)
+plt.ylabel('Posicao Lateral ($x_2$)', fontsize=12)
+plt.grid(True)
+plt.legend()
+plt.show()
+
+\end{lstlisting}
+\newpage
 \subsection*{\sc Questão 2.2}
 
 \subsubsection*{\sc Solução}
+Para iniciarmos essa questão, vamos definir cada uma das métricas:
+\begin{itemize}
+    \item Valor de Estado Estacionário: É o valor final que a saída do sistema atinge e se mantém após todas as perturbações transitórias terem se dissipado, ou seja, quando o tempo $t$ tende ao infinito ($t \to \infty$). É o comportamento de longo prazo do sistema.
+    \item Porcentagem de Sobressinal: É a quantidade máxima pela qual a resposta do sistema excede seu valor de estado estacionário, expressa como uma porcentagem do valor de estado estacionário. 
+    \item Tempo de Subida: É o tempo que a resposta do sistema leva para ir de 10\% a 90\% do valor de estado estacionário
+    \item Tempo de Estabilização: É o tempo que a resposta do sistema leva para atingir e permanecer dentro de uma banda de erro especificada do valor de estado estacionário.
+\end{itemize}
 
-\begin{lstlisting}[caption = {Código da Questão 2.2}, label={code:t2q2}]
-Codigo aqui!
-\end{lstlisting}
+Analisando cada um desses valores para o nosso gráfico, temos:
+\begin{itemize}
+    \item Valor de Estado Estacionário: A resposta cresce indefinidamente com o tempo, de modo que não é possível determinar um valor de estado estacionário
+    \item Porcentagem de Sobressinal: Da mesma forma, também não é possível determinar uma porcentagem de sobressinal, o sistema é instável.
+    \item Tempo de Subida: Não é possível determinar um tempo de subida, a resposta sobe/cresce indefinidamente.
+    \item Tempo de Estabilização: A resposta não se estabiliza, não é possível determinar um tempo de estabilização. (Ou também podemos considerar o tempo de estabilização infinito).
+\end{itemize}
 
+\newpage
 \subsection*{\sc Questão 2.3}
 
 \subsubsection*{\sc Solução}
+O mapa polo-zero é uma representação gráfica dos polos(valores de s para os quais a função de transferência se torna infinita) e zeros(valores de s para os quais a função de transferência se torna 0). Os polos são representados por $\times$ no mapa e os zeros por $\circ$. \\
+
+\begin{figure}[h!]
+     \centering
+     \includegraphics[width=0.7\textwidth]{imagens/Plot_t2q3.png}
+\end{figure}
+
+Através da expressão $G(s) = \frac{5s + \frac{100}{3}}{s^2} \approx \frac{5s + 33.33}{s^2}$ e do plot. Podemos verificar que há um zero em $s \approx -6.67$ e dois polos (multiplicidade 2) em $s = 0$.
+\\\\
+Com esse resultado podemos inferir que o sistema é instável, pois polos múltiplos sobre o eixo imaginário ($Re\{s\} = 0$) indicam instabilidade.
+\\\\
+Além disso, apesar de não influenciarem na estabilidade, os zeros influenciam "acelerando" a resposta do sistema. Nesse caso, o zero altera a inclinação da rampa de crescimento da nossa resposta.
+
 
 \begin{lstlisting}[caption = {Código da Questão 2.3}, label={code:t2q3}]
-Codigo aqui!
+import control as ct
+import numpy as np
+import matplotlib.pyplot as plt
+
+#coeficientes da transfer function
+num = [5, 33.33]
+den = [1, 0, 0]
+
+sys = ct.TransferFunction(num, den)
+print(sys)
+
+plt.figure(figsize=(8,6))
+
+ct.pzmap(sys, plot=True, title='Mapa Polo-Zero')
+plt.xlabel('Eixo Real ($\sigma$)')
+plt.ylabel('Eixo Imaginario ($j\omega$)')
+plt.show()
 \end{lstlisting}
 
 \subsection*{\sc Questão 2.4}
 
 \subsubsection*{\sc Solução}
 
-\begin{lstlisting}[caption = {Código da Questão 2.4}, label={code:t2q4}]
-Codigo aqui!
-\end{lstlisting}
+No contexto do sistema mecânico (o veículo), as variáveis são definidas da seguinte forma:
+\\\\
+Variáveis de Estado:
+\begin{itemize}
+    \item $x_1(t)$ (posição longitudinal)
+    \item $x_2(t)$ (posição lateral)
+    \item $x_3(t) = \theta(t)$ (orientação)
+\end{itemize}
+Vetor de Entradas ($u(t)$):
+\begin{itemize}
+    \item $u(t) = [v(t), \delta(t)]$, onde $v(t)$ é a velocidade no centro de massa e $\delta(t)$ é o ângulo de direção.
+\end{itemize}
+Vetor de Saídas ($y(t)$:
+\begin{itemize}
+    \item $y(t) = [x_1(t), x_2(t)]$.
+\end{itemize}
 
-\newpage
+No entanto, para a análise de controlabilidade e observabilidade do sistema linearizado, as fontes especificam uma configuração reduzida:
+\begin{itemize}
+    \item A variável manipulada (entrada) é o ângulo de esterçamento ($\delta$).
+    \item A variável controlada (saída) é a posição lateral ($x_2$).
+    \item As variáveis de estado consideradas para este modelo linearizado e reduzido são $x_2$ e $x_3$.
+\end{itemize}
+
+Para verificar a controlabilidade de um sistema, você utiliza a Matriz de Controlabilidade ($C_M$). Para um sistema de $n$ variáveis de estado descrito por $\dot{x} = Ax + Bu$, a matriz de controlabilidade é dada por $C_M = [B \quad AB \quad A^2B \quad \dots \quad A^{n-1}B]$. O sistema é completamente controlável se, e somente se, o posto (rank) da matriz $C_M$ for igual a $n$.
+\\\\
+O modelo linearizado e reduzido do seu sistema, focado em $x_2$ e $x_3$, possui as seguintes matrizes A e B: $A = \begin{bmatrix} 0 & 10 \\ 0 & 0 \end{bmatrix}$ $B = \begin{bmatrix} 5 \\ 10/3 \end{bmatrix}$.
+\\\\
+O número de variáveis de estado ($n$) é 2 e a matriz de controlabilidade $C_M$ é $[B \quad AB]$
+\\\\
+Resolvendo AB:
+\[
+ AB = \begin{bmatrix} 0 & 10 \\ 0 & 0 \end{bmatrix} \begin{bmatrix} 5 \\ 10/3 \end{bmatrix} = \begin{bmatrix} 10 \cdot (10/3) \\ 0 \end{bmatrix} = \begin{bmatrix} 100/3 \\ 0 \end{bmatrix}
+\]
+ \\\\
+ Assim:
+ \[
+    C_M = \begin{bmatrix} 5 & 100/3 \\ 10/3 & 0 \end{bmatrix}
+ \]
+ Para encontrar o posto desta matriz 2x2, calculamos seu determinante: $det(C_M) = (5 \cdot 0) - (100/3 \cdot 10/3) = 0 - 1000/9 = -1000/9$. Como o determinante é diferente de zero, o posto da matriz $C_M$ é 2.
+ \\\\
+Uma vez que o posto é igual ao número de variáveis de estado, o sistema é completamente controlável.
+\\\\
+A observabilidade de um sistema refere-se à capacidade de saber o que está acontecendo dentro do sistema apenas olhando para suas saídas.
+\\\\
+Para verificar a observabilidade, você utiliza a Matriz de Observabilidade ($O$). Para um sistema descrito por $\dot{x} = Ax + Bu$ e $y = Cx$, a matriz de observabilidade é dada por $O = \begin{bmatrix} C \ CA \ CA^2 \ \dots \ CA^{n-1} \end{bmatrix}$. O sistema é completamente observável se, e somente se, o posto (rank) da matriz $O$ for igual a $n$.
+\\\\
+As matrizes A e C para o modelo linearizado e reduzido são: $A = \begin{bmatrix} 0 & 10 \\ 0 & 0 \end{bmatrix}$ $C = \begin{bmatrix} 1 & 0 \end{bmatrix}$ (considerando $x_2$ como a saída controlada).
+\\\\
+A matriz de observabilidade $O$ é $\begin{bmatrix} C \\ CA \end{bmatrix}$.
+\\\\
+Resolvendo CA:
+\[
+    CA = \begin{bmatrix} 1 & 0 \end{bmatrix} \begin{bmatrix} 0 & 10 \\ 0 & 0 \end{bmatrix} = \begin{bmatrix} 0 & 10 \end{bmatrix}
+\]
+Assim:
+\[
+    O = \begin{bmatrix} 1 & 0 \\ 0 & 10 \end{bmatrix}
+\]
+Calculamos seu determinante: $det(O) = (1 \cdot 10) - (0 \cdot 0) = 10 - 0 = 10$. Como o determinante é diferente de zero, o posto da matriz $O$ é 2. 
+\\\\
+Uma vez que o posto é igual ao número de variáveis de estado, o modelo linearizado é completamente observável.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section*{\sc Tarefa 3: Controle do Sistema Dinâmico}
