@@ -947,7 +947,7 @@ Projetando o sistema com controlador:
     \caption{Sistema com Controlador.} % Legenda para a figura
     \label{fig:diagrama_blocos_controlador} % Rótulo para referências cruzadas
 \end{figure}
-Em que T(s) é a função de transferência do nosso sistema em malha fechada com realimentação unitária. Utilizamos T(s) (ou seja, uma abordagem que nos permita influenciar o erro de estado estacionário para um valor diferente de zero), porque, de outro modo, a função de transferência de malha aberta G(s), obtida na questão 2.1, não permitiria um erro de estado estacionário diferente de zero. Isso ocorre porque G(s) possui duas integrações puras no caminho direto da malha, caracterizando-a como um sistema do Tipo 2.
+Em que T(s) é a função de transferência do nosso sistema ($G(s)$) em malha fechada com realimentação unitária. Utilizamos T(s) (ou seja, uma abordagem que nos permita influenciar o erro de estado estacionário para um valor diferente de zero), porque, de outro modo, a função de transferência de malha aberta G(s), obtida na questão 2.1, não permitiria um erro de estado estacionário diferente de zero. Isso ocorre porque G(s) possui duas integrações puras no caminho direto da malha, caracterizando-a como um sistema do Tipo 2.
 \\\\
 Explicado o motivo de usarmos $T(s)$ como a função de transferência da planta no cálculo do erro de estado estacionário, temos a expressão para $T(s)$ como:
 \[
@@ -1011,13 +1011,22 @@ G_{c}(s) = \frac{s + 0.05}{s + 0.0055}
 
 Para simular e analisar a resposta ao degrau do sistema, consideraremos as configurações não compensada (sem controlador) e compensada (com o controlador de atraso projetado).
 \\\\
-A função de transferência de malha fechada do sistema não compensado, com realimentação unitária, é dada por $T(s)$:
+Conforme mencionado, para a análise e o projeto de compensação, estamos considerando T(s) como a representação do nosso sistema. Assim, o sistema não compensado terá a seguinte configuração:
+
+\begin{figure}[H] % [h!] tenta colocar a figura "aqui" (here)
+    \centering % Centraliza a imagem
+    \includegraphics[width=0.8\textwidth]{imagens/Diagrama de Blocos-Página-2.drawio.pdf} % Inclui o PDF como imagem
+    \caption{Sistema T(s) sem Controlador.} % Legenda para a figura
+    \label{fig:diagrama_blocos_controlador} % Rótulo para referências cruzadas
+\end{figure}
+
+A função de transferência de malha aberta do sistema não compensado é dada por $T(s)$:
 \[
     T(s) = \frac{5s + 33.33}{s^2 + 5s+33.33}
 \]
-Para uma entrada degrau unitário, $U(s)= \frac{1}{s}$, a resposta no domínio de Laplace é:
+Para uma entrada degrau unitário, $U(s)= \frac{1}{s}$, no sistema não compensado de malha fechada com feedback unitário, a resposta no domínio de Laplace é:
 \[
-    Y(s) = U(s) \cdot T(s) =\frac{5s + 33.33}{s^2 + 5s+33.33}
+    Y(s) = U(s) \cdot \frac{T(s)}{1 + T(s)} =\frac{1}{s}\cdot\frac{5s + 33.33}{s^2 + 10s+66.66}
 \]
 
 A seguir, é apresentada a resposta ao degrau do sistema não compensado: 
@@ -1028,7 +1037,7 @@ A seguir, é apresentada a resposta ao degrau do sistema não compensado:
     \label{fig:resposta-degrau-sem-controlador}
 \end{figure}
 
-Observa-se que a resposta ao degrau do sistema não compensado se estabiliza em 1. Isso indica que o erro de estado estacionário é zero para entrada degrau unitário.
+Observa-se que a resposta ao degrau do sistema não compensado se estabiliza em 0.5. Isso indica que o erro de estado estacionário é de 50\% ($e_{ss} = 1 - 0.5 = 0.5$) para entrada degrau unitário.
 \\\\
 Para simular o sistema compensado, aplicando o Lag Compensator $G_c(s) = \frac{s + 0.05}{s + 0.0055}$em cascata com a planta e realimentação unitária, a função de transferência de malha fechada é dada por:
 \[
@@ -1061,26 +1070,28 @@ plt.plot(t, y)
 plt.show()
 \end{lstlisting}
 \begin{lstlisting}[caption = {Código da Questão 3.3}]
-G_s_feedback = ctr.feedback(G_s, 1)
-print(G_s_feedback)
+T_s = ctr.feedback(G_s, 1)
+T_s_feedback = ctr.feedback(T_s, 1)
+print(T_s_feedback)
 
-polos_G_s_feedback = ctr.poles(G_s_feedback)  
+polos_G_s_feedback = ctr.poles(T_s_feedback)  
 print(f'\nPolos do feedback de G_s(s): {polos_G_s_feedback}')
 
-t, y = ctr.step_response(G_s_feedback)
+t, y = ctr.step_response(T_s_feedback)
 plt.plot(t, y)
 plt.xlabel('Tempo (s)')
 plt.ylabel('Resposta y(t)')
 plt.grid()
 plt.show()
-ctr.step_info(G_s_feedback)
+ctr.step_info(T_s_feedback)
 \end{lstlisting}
 \begin{lstlisting}[caption = {Código da Questão 3.3}]
 G_c = ctr.tf([1, 0.05], [1, 0.005555])
 
-G = G_s_feedback * G_c
+G = T_s * G_c
 
 G_feedback = ctr.feedback(G, 1)
+
 print(G_feedback)
 
 t, y = ctr.step_response(G_feedback)
